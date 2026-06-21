@@ -1,0 +1,26 @@
+--Most optimal skills to learn--
+with optimal_skills as (select
+    skills,
+    count(*),
+    case
+        when count(*) >= 1000 then 'High Demand'
+        else 'Low Demand'
+    end as demand,
+    case
+        when avg(salary_year_avg) >=70000 then 'High Paying'
+        else 'Low Paying'
+    end as salary
+FROM job_postings_fact
+left join skills_job_dim on job_postings_fact.job_id = skills_job_dim.job_id
+left join skills_dim on skills_job_dim.skill_id = skills_dim.skill_id
+where 
+    job_title_short = 'Data Analyst' and 
+    salary_year_avg > 70000 and 
+    salary_year_avg is not null and 
+    skills is not null
+group by skills)
+
+select
+    skills
+FROM optimal_skills
+where demand = 'High Demand' and salary = 'High Paying';

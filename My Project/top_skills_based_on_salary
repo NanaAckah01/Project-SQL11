@@ -1,0 +1,19 @@
+--top skills based on salary--
+WITH top_skills_based_on_salary as (SELECT
+    *
+FROM job_postings_fact
+LEFT JOIN skills_job_dim on job_postings_fact.job_id = skills_job_dim.job_id
+LEFT JOIN skills_dim on skills_job_dim.skill_id = skills_dim.skill_id
+WHERE 
+    job_title_short = 'Data Analyst' and
+    salary_year_avg > 70000
+    )
+
+select
+    skills,
+    avg(salary_year_avg),
+    count(*)
+FROM top_skills_based_on_salary
+where skills is not NULL
+group BY skills
+ORDER by avg(salary_year_avg) desc;

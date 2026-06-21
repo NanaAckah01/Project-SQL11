@@ -1,0 +1,24 @@
+--skills in demand--
+WITH skills_demand as (SELECT
+    *
+FROM job_postings_fact
+WHERE 
+    job_title_short = 'Data Analyst' and
+    salary_year_avg > 70000
+    )
+
+select
+    skills,
+    count(*),
+    CASE
+        WHEN count(*) >= 1000 then 'High Demand'
+        ELSE 'Low Demand'
+    END as demand
+FROM skills_demand
+LEFT JOIN skills_job_dim on skills_demand.job_id = skills_job_dim.job_id
+LEFT JOIN skills_dim on skills_job_dim.skill_id = skills_dim.skill_id
+WHERE skills is not NULL
+group BY 
+    skills
+ORDER BY  
+    count(*) DESC;

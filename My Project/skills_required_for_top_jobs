@@ -1,0 +1,19 @@
+--top paying jobs and skills--
+WITH job_skills as (select
+    distinct job_id,
+    job_title,
+    salary_year_avg
+from job_postings_fact
+where salary_year_avg is not NULL
+ORDER BY
+    salary_year_avg DESC
+limit 20)
+
+select
+    job_skills.job_id,
+    job_title,
+    skills
+FROM job_skills
+left join skills_job_dim on job_skills.job_id = skills_job_dim.job_id
+left join skills_dim on skills_job_dim.skill_id = skills_dim.skill_id
+where skills is not null
